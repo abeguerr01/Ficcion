@@ -1,0 +1,40 @@
+@options
+@packages
+-encoding
+'UTF-8'
+-protected
+--release
+24
+-sourcepath
+'C:/Users/USER/OneDrive/Clase D.A.M/2o Curso/DI/Ejercicio - DI/DI_p5/src/main/java;C:/Users/USER/OneDrive/Clase D.A.M/2o Curso/DI/Ejercicio - DI/DI_p5/target/generated-sources/annotations'
+-author
+-bottom
+'Copyright &#169; 2025. All rights reserved.'
+-charset
+'UTF-8'
+-d
+'C:/Users/USER/OneDrive/Clase D.A.M/2o Curso/DI/Ejercicio - DI/DI_p5/target/apidocs'
+-docencoding
+'UTF-8'
+-doctitle
+'DI_p5 1.0-SNAPSHOT API'
+-use
+-version
+-windowtitle
+'DI_p5 1.0-SNAPSHOT API'
+com.mycompany.di_p5
+C:\Users\USER\OneDrive\Clase D.A.M\2o Curso\DI\Ejercicio - DI\DI_p5\src\main\java = 1763644298199
+C:\Users\USER\OneDrive\Clase D.A.M\2o Curso\DI\Ejercicio - DI\DI_p5\target\generated-sources\annotations = 1764247419200
+C:\Users\USER\OneDrive\Clase D.A.M\2o Curso\DI\Ejercicio - DI\DI_p5\target\apidocs\allclasses-index.html = 1764247437539
+C:\Users\USER\OneDrive\Clase D.A.M\2o Curso\DI\Ejercicio - DI\DI_p5\target\apidocs\allpackages-index.html = 1764247437568
+C:\Users\USER\OneDrive\Clase D.A.M\2o Curso\DI\Ejercicio - DI\DI_p5\target\apidocs\element-list = 1764247436635
+C:\Users\USER\OneDrive\Clase D.A.M\2o Curso\DI\Ejercicio - DI\DI_p5\target\apidocs\help-doc.html = 1764247437937
+C:\Users\USER\OneDrive\Clase D.A.M\2o Curso\DI\Ejercicio - DI\DI_p5\target\apidocs\index-all.html = 1764247437828
+C:\Users\USER\OneDrive\Clase D.A.M\2o Curso\DI\Ejercicio - DI\DI_p5\target\apidocs\index.html = 1764247437883
+C:\Users\USER\OneDrive\Clase D.A.M\2o Curso\DI\Ejercicio - DI\DI_p5\target\apidocs\member-search-index.js = 1764247437663
+C:\Users\USER\OneDrive\Clase D.A.M\2o Curso\DI\Ejercicio - DI\DI_p5\target\apidocs\module-search-index.js = 1764247437621
+C:\Users\USER\OneDrive\Clase D.A.M\2o Curso\DI\Ejercicio - DI\DI_p5\target\apidocs\overview-tree.html = 1764247437399
+C:\Users\USER\OneDrive\Clase D.A.M\2o Curso\DI\Ejercicio - DI\DI_p5\target\apidocs\package-search-index.js = 1764247437626
+C:\Users\USER\OneDrive\Clase D.A.M\2o Curso\DI\Ejercicio - DI\DI_p5\target\apidocs\search.html = 1764247437844
+C:\Users\USER\OneDrive\Clase D.A.M\2o Curso\DI\Ejercicio - DI\DI_p5\target\apidocs\tag-search-index.js = 1764247437677
+C:\Users\USER\OneDrive\Clase D.A.M\2o Curso\DI\Ejercicio - DI\DI_p5\target\apidocs\type-search-index.js = 1764247437643
