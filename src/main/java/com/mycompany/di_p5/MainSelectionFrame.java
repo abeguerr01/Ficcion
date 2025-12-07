@@ -11,42 +11,22 @@ import java.awt.event.ActionListener;
 import java.util.List;
 
 /**
- * Ventana de selección principal, que permite al usuario elegir entre
- * Películas o Series.
- * Cierra esta ventana y abre la ventana de categoría al pulsar un botón.
+ * Ventana intermedia que permite al usuario elegir entre ver Películas o Series.
+ * Al seleccionar una opción, cierra esta ventana y abre el catálogo correspondiente.
  */
 public class MainSelectionFrame extends JFrame implements ActionListener {
 
-    /**
-     * Botón para acceder al catálogo de películas.
-     */
     private final JButton moviesButton;
-    
-    /**
-     * Botón para acceder al catálogo de series.
-     */
     private final JButton seriesButton;
-    
-    /**
-     * Lista de películas disponibles en el catálogo.
-     */
     private final List<Pelicula> peliculas;
-    
-    /**
-     * Lista de series disponibles en el catálogo.
-     */
     private final List<Serie> series;
-    
-    /**
-     * Cliente activo que puede guardar favoritos.
-     */
     private final Cliente clienteActivo;
 
     /**
-     * Constructor para crear la ventana de selección.
-     * @param peliculas Lista de películas disponibles.
-     * @param series Lista de series disponibles.
-     * @param clienteActivo Cliente activo que puede guardar favoritos.
+     * Constructor de la ventana de selección.
+     * @param peliculas Lista de películas disponibles en el catálogo
+     * @param series Lista de series disponibles en el catálogo
+     * @param clienteActivo Cliente autenticado que puede guardar favoritos
      */
     public MainSelectionFrame(List<Pelicula> peliculas, List<Serie> series, Cliente clienteActivo) {
         super("Selección de Contenido");
@@ -54,55 +34,69 @@ public class MainSelectionFrame extends JFrame implements ActionListener {
         this.series = series;
         this.clienteActivo = clienteActivo;
 
-        // Configuración básica
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // Usamos DISPOSE para cerrar esta ventana
-        setSize(500, 200);
-        setLayout(new FlowLayout(FlowLayout.CENTER, 30, 50));
-        setLocationRelativeTo(null); // Centrar la ventana
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setSize(560, 220);
+        setLocationRelativeTo(null);
+        setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 10, 10, 10);
 
-        JLabel instructionLabel = new JLabel("Selecciona el tipo de contenido que quieres ver:");
-        add(instructionLabel);
+        // Título
+        JLabel titleLabel = new JLabel("¿Qué deseas ver hoy?");
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 22));
+        titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = 2;
+        add(titleLabel, gbc);
 
-        // 1. Botón Películas
+        // Botón Películas
         moviesButton = new JButton("Películas");
-        moviesButton.setFont(new Font("Arial", Font.BOLD, 16));
+        moviesButton.setFont(new Font("Arial", Font.BOLD, 18));
+        moviesButton.setPreferredSize(new Dimension(180, 60));
         moviesButton.addActionListener(this);
-        add(moviesButton);
+        gbc.gridwidth = 1;
+        gbc.gridy = 1;
+        gbc.gridx = 0;
+        add(moviesButton, gbc);
 
-        // 2. Botón Series
+        // Botón Series
         seriesButton = new JButton("Series");
-        seriesButton.setFont(new Font("Arial", Font.BOLD, 16));
+        seriesButton.setFont(new Font("Arial", Font.BOLD, 18));
+        seriesButton.setPreferredSize(new Dimension(180, 60));
         seriesButton.addActionListener(this);
-        add(seriesButton);
+        gbc.gridx = 1;
+        add(seriesButton, gbc);
 
         setVisible(true);
     }
 
     /**
-     * Maneja los eventos de pulsación de los botones de selección.
-     * Cierra esta ventana y abre la correspondiente ventana de categoría.
-     * @param e El evento de acción que se ha producido.
+     * Gestiona la pulsación de los botones.
+     * Abre la ventana del catálogo correspondiente y cierra esta ventana.
      */
     @Override
     public void actionPerformed(ActionEvent e) {
-        String category = "";
-        
         if (e.getSource() == moviesButton) {
-            category = "Películas";
-        } else if (e.getSource() == seriesButton) {
-            category = "Series";
+            if (peliculas != null && !peliculas.isEmpty()) {
+                new CategoryFrame("Películas", peliculas, clienteActivo);
+            } else {
+                JOptionPane.showMessageDialog(this, "No hay películas disponibles.", 
+                    "Catálogo vacío", JOptionPane.INFORMATION_MESSAGE);
+                return;
+            }
+        } 
+        else if (e.getSource() == seriesButton) {
+            if (series != null && !series.isEmpty()) {
+                new CategoryFrame("Series", series, clienteActivo);
+            } else {
+                JOptionPane.showMessageDialog(this, "No hay series disponibles.", 
+                    "Catálogo vacío", JOptionPane.INFORMATION_MESSAGE);
+                return;
+            }
         }
 
-        if (!category.isEmpty()) {
-            // Abrir la nueva ventana de categoría con las listas correspondientes
-            if (category.equals("Películas") && peliculas != null) {
-                new CategoryFrame(category, peliculas, clienteActivo);
-            } else if (category.equals("Series") && series != null) {
-                new CategoryFrame(category, series, clienteActivo);
-            }
-            
-            // Cerrar la ventana actual (DISPOSE_ON_CLOSE)
-            this.dispose(); 
-        }
+        // Cerrar esta ventana una vez abierta la siguiente
+        this.dispose();
     }
 }

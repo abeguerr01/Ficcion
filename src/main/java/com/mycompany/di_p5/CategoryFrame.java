@@ -7,9 +7,8 @@ import java.awt.event.ActionListener;
 import java.util.List;
 
 /**
- * Ventana final de la aplicación que muestra el tipo de contenido seleccionado
- * (Películas o Series). Permite seleccionar un título y ver su información e imagen,
- * además de guardarlo como favorito.
+ * Ventana que muestra el catálogo de películas o series.
+ * Totalmente compatible con Java 8.
  */
 public class CategoryFrame extends JFrame implements ActionListener {
 
@@ -17,105 +16,71 @@ public class CategoryFrame extends JFrame implements ActionListener {
     private JLabel imagenLabel;
     private JTextArea infoTextArea;
     private JButton favoritoButton;
-    private List<Pelicula> peliculas;
-    private List<Serie> series;
+    private List<? extends Titulo> contenidos;
     private String categoryName;
-    private boolean esPeliculas;
     private Cliente clienteActivo;
-    private int indiceActual;
+    private int indiceActual = 0;
 
     /**
-     * Constructor para crear la ventana de categoría con películas.
+     * Constructor único que funciona para películas y series.
      */
-    public CategoryFrame(String categoryName, List<Pelicula> peliculas, Cliente clienteActivo) {
+    public CategoryFrame(String categoryName, List<? extends Titulo> contenidos, Cliente clienteActivo) {
         this.categoryName = categoryName;
-        this.peliculas = peliculas;
-        this.series = null;
-        this.esPeliculas = true;
+        this.contenidos = contenidos;
         this.clienteActivo = clienteActivo;
-        this.indiceActual = 0;
         inicializarComponentes();
     }
 
-    /**
-     * Constructor para crear la ventana de categoría con series.
-     */
-    public CategoryFrame(String categoryName, List<Serie> series, Cliente clienteActivo) {
-        this.categoryName = categoryName;
-        this.series = series;
-        this.peliculas = null;
-        this.esPeliculas = false;
-        this.clienteActivo = clienteActivo;
-        this.indiceActual = 0;
-        inicializarComponentes();
-    }
-
-    /**
-     * Inicializa todos los componentes de la ventana.
-     */
     private void inicializarComponentes() {
         setTitle("Catálogo de " + categoryName);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); 
-        setSize(800, 600);
-        setLayout(new BorderLayout());
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setSize(900, 650);
         setLocationRelativeTo(null);
+        setLayout(new BorderLayout());
 
-        JPanel topPanel = new JPanel(new BorderLayout());
+        // Título principal
         JLabel titleLabel = new JLabel("Catálogo de " + categoryName, SwingConstants.CENTER);
-        titleLabel.setFont(new Font("Serif", Font.BOLD, 24));
-        titleLabel.setForeground(Color.DARK_GRAY);
-        titleLabel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        
+        titleLabel.setFont(new Font("Serif", Font.BOLD, 28));
+        titleLabel.setBorder(BorderFactory.createEmptyBorder(15, 0, 15, 0));
+
+        // ComboBox
         titulosComboBox = new JComboBox<>();
-        if (esPeliculas && peliculas != null) {
-            for (Pelicula pelicula : peliculas) {
-                titulosComboBox.addItem(pelicula.getTitulo());
-            }
-        } else if (!esPeliculas && series != null) {
-            for (Serie serie : series) {
-                titulosComboBox.addItem(serie.getTitulo());
-            }
+        for (Titulo t : contenidos) {
+            titulosComboBox.addItem(t.getTitulo());
         }
         titulosComboBox.addActionListener(this);
-        titulosComboBox.setFont(new Font("Arial", Font.PLAIN, 14));
-        
-        JLabel seleccionLabel = new JLabel("Selecciona un título:");
-        seleccionLabel.setFont(new Font("Arial", Font.BOLD, 14));
-        
-        favoritoButton = new JButton("⭐ Guardar como favorito");
+
+        // Botón favorito
+        favoritoButton = new JButton("Guardar como favorito");
+        favoritoButton.setBackground(new Color(255, 215, 0));
         favoritoButton.setFont(new Font("Arial", Font.BOLD, 12));
         favoritoButton.addActionListener(this);
-        favoritoButton.setBackground(new Color(255, 215, 0));
-        favoritoButton.setForeground(Color.BLACK);
-        
-        JPanel comboPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        comboPanel.add(seleccionLabel);
-        comboPanel.add(titulosComboBox);
-        comboPanel.add(favoritoButton);
-        
-        topPanel.add(titleLabel, BorderLayout.NORTH);
-        topPanel.add(comboPanel, BorderLayout.CENTER);
-        
-        JPanel centerPanel = new JPanel(new BorderLayout());
-        
-        imagenLabel = new JLabel("", SwingConstants.CENTER);
-        imagenLabel.setBorder(BorderFactory.createTitledBorder("Imagen"));
-        imagenLabel.setPreferredSize(new Dimension(300, 400));
-        
-        infoTextArea = new JTextArea();
+
+        JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
+        topPanel.add(new JLabel("Selecciona un título:"));
+        topPanel.add(titulosComboBox);
+        topPanel.add(favoritoButton);
+
+        // Área de imagen e información
+        imagenLabel = new JLabel("Selecciona un título", SwingConstants.CENTER);
+        imagenLabel.setPreferredSize(new Dimension(300, 420));
+        imagenLabel.setBorder(BorderFactory.createTitledBorder("Portada"));
+
+        infoTextArea = new JTextArea(15, 40);
         infoTextArea.setEditable(false);
-        infoTextArea.setWrapStyleWord(true);
-        infoTextArea.setLineWrap(true);
-        infoTextArea.setFont(new Font("Arial", Font.PLAIN, 12));
-        infoTextArea.setBorder(BorderFactory.createTitledBorder("Información"));
-        
+        infoTextArea.setFont(new Font("Monospaced", Font.PLAIN, 14));
+        JScrollPane scrollInfo = new JScrollPane(infoTextArea);
+        scrollInfo.setBorder(BorderFactory.createTitledBorder("Información"));
+
+        JPanel centerPanel = new JPanel(new BorderLayout(20, 20));
         centerPanel.add(imagenLabel, BorderLayout.WEST);
-        centerPanel.add(new JScrollPane(infoTextArea), BorderLayout.CENTER);
-        
-        add(topPanel, BorderLayout.NORTH);
-        add(centerPanel, BorderLayout.CENTER);
-        
-        if (titulosComboBox.getItemCount() > 0) {
+        centerPanel.add(scrollInfo, BorderLayout.CENTER);
+
+        add(titleLabel, BorderLayout.NORTH);
+        add(topPanel, BorderLayout.CENTER);
+        add(centerPanel, BorderLayout.SOUTH);
+
+        if (!contenidos.isEmpty()) {
             mostrarInformacion(0);
         }
 
@@ -125,95 +90,96 @@ public class CategoryFrame extends JFrame implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == titulosComboBox) {
-            int indiceSeleccionado = titulosComboBox.getSelectedIndex();
-            indiceActual = indiceSeleccionado;
-            mostrarInformacion(indiceSeleccionado);
+            indiceActual = titulosComboBox.getSelectedIndex();
+            mostrarInformacion(indiceActual);
         } else if (e.getSource() == favoritoButton) {
-            guardarFavorito();
+            guardarComoFavorito();
         }
     }
 
     private void mostrarInformacion(int indice) {
-        if (esPeliculas && peliculas != null && indice >= 0 && indice < peliculas.size()) {
-            Pelicula pelicula = peliculas.get(indice);
-            
-            String info = "ID: " + pelicula.id + "\n\n";
-            info += "Título: " + pelicula.getTitulo() + "\n\n";
-            info += "Duración: " + pelicula.getDuracion() + " minutos\n\n";
-            info += "Ruta de imagen: " + (pelicula.getRutaImagen().isEmpty() ? "No especificada" : pelicula.getRutaImagen());
-            infoTextArea.setText(info);
-            
-            cargarImagen(pelicula.getRutaImagen());
-            
-        } else if (!esPeliculas && series != null && indice >= 0 && indice < series.size()) {
-            Serie serie = series.get(indice);
-            
-            String info = "ID: " + serie.id + "\n\n";
-            info += "Título: " + serie.getTitulo() + "\n\n";
-            info += "Temporadas: " + serie.getTemporadas() + "\n\n";
-            info += "Capítulos por temporada: ";
-            if (serie.getCapitulos() != null) {
-                for (int i = 0; i < serie.getCapitulos().length; i++) {
-                    info += "T" + (i + 1) + ": " + serie.getCapitulos()[i];
-                    if (i < serie.getCapitulos().length - 1) info += ", ";
+        Titulo titulo = contenidos.get(indice);
+        StringBuilder info = new StringBuilder();
+
+        info.append("ID: ").append(getId(titulo)).append("\n\n");
+        info.append("Título: ").append(titulo.getTitulo()).append("\n\n");
+
+        // Aquí usamos instanceof + cast clásico (Java 8)
+        if (titulo instanceof Pelicula) {
+            Pelicula pelicula = (Pelicula) titulo;
+            info.append("Duración: ").append(pelicula.getDuracion()).append(" minutos\n\n");
+        } else if (titulo instanceof Serie) {
+            Serie serie = (Serie) titulo;
+            info.append("Temporadas: ").append(serie.getTemporadas()).append("\n");
+            info.append("Capítulos por temporada: ");
+            int[] caps = serie.getCapitulos();
+            if (caps != null) {
+                for (int i = 0; i < caps.length; i++) {
+                    info.append("T").append(i + 1).append(": ").append(caps[i]);
+                    if (i < caps.length - 1) info.append(", ");
                 }
             }
-            info += "\n\n";
-            info += "Ruta de imagen: " + (serie.getRutaImagen().isEmpty() ? "No especificada" : serie.getRutaImagen());
-            infoTextArea.setText(info);
-            
-            cargarImagen(serie.getRutaImagen());
+            info.append("\n");
         }
+
+        info.append("Ruta imagen: ").append(getRutaImagen(titulo).isEmpty() ? "No disponible" : getRutaImagen(titulo));
+
+        infoTextArea.setText(info.toString());
+        cargarImagen(getRutaImagen(titulo));
     }
 
-    private void guardarFavorito() {
+    private void guardarComoFavorito() {
         if (clienteActivo == null) {
-            JOptionPane.showMessageDialog(this, 
-                "No hay cliente activo para guardar favoritos.", 
-                "Error", 
-                JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "No hay usuario conectado.", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        
-        if (esPeliculas && peliculas != null && indiceActual >= 0 && indiceActual < peliculas.size()) {
-            Pelicula pelicula = peliculas.get(indiceActual);
-            clienteActivo.guardarPelicula(pelicula.id);
-            JOptionPane.showMessageDialog(this, 
-                "Película '" + pelicula.getTitulo() + "' guardada como favorita.", 
-                "Favorito guardado", 
-                JOptionPane.INFORMATION_MESSAGE);
-        } else if (!esPeliculas && series != null && indiceActual >= 0 && indiceActual < series.size()) {
-            Serie serie = series.get(indiceActual);
-            clienteActivo.guardarSerie(serie.id);
-            JOptionPane.showMessageDialog(this, 
-                "Serie '" + serie.getTitulo() + "' guardada como favorita.", 
-                "Favorito guardado", 
-                JOptionPane.INFORMATION_MESSAGE);
+
+        Titulo seleccionado = contenidos.get(indiceActual);
+
+        if (seleccionado instanceof Pelicula) {
+            Pelicula p = (Pelicula) seleccionado;
+            clienteActivo.guardarPelicula(p.id);
+            JOptionPane.showMessageDialog(this, "Película '" + p.getTitulo() + "' añadida a favoritos");
+        } else if (seleccionado instanceof Serie) {
+            Serie s = (Serie) seleccionado;
+            clienteActivo.guardarSerie(s.id);
+            JOptionPane.showMessageDialog(this, "Serie '" + s.getTitulo() + "' añadida a favoritos");
         }
     }
 
-    private void cargarImagen(String rutaImagen) {
-        if (rutaImagen == null || rutaImagen.isEmpty()) {
+    private void cargarImagen(String ruta) {
+        if (ruta == null || ruta.trim().isEmpty()) {
             imagenLabel.setIcon(null);
-            imagenLabel.setText("No hay imagen disponible");
+            imagenLabel.setText("No hay imagen");
             return;
         }
-        
+
         try {
-            ImageIcon icono = new ImageIcon(rutaImagen);
-            if (icono.getIconWidth() > 0) {
-                Image imagen = icono.getImage();
-                Image imagenRedimensionada = imagen.getScaledInstance(280, 380, Image.SCALE_SMOOTH);
-                imagenLabel.setIcon(new ImageIcon(imagenRedimensionada));
+            ImageIcon icon = new ImageIcon(ruta);
+            if (icon.getIconWidth() > 0) {
+                Image img = icon.getImage().getScaledInstance(280, 400, Image.SCALE_SMOOTH);
+                imagenLabel.setIcon(new ImageIcon(img));
                 imagenLabel.setText("");
             } else {
                 imagenLabel.setIcon(null);
                 imagenLabel.setText("Imagen no encontrada");
             }
-        } catch (Exception e) {
+        } catch (Exception ex) {
             imagenLabel.setIcon(null);
-            imagenLabel.setText("Error al cargar la imagen");
-            e.printStackTrace();
+            imagenLabel.setText("Error al cargar imagen");
         }
+    }
+
+    // Métodos auxiliares (compatibles con Java 8)
+    private int getId(Titulo t) {
+        if (t instanceof Pelicula) return ((Pelicula) t).id;
+        if (t instanceof Serie) return ((Serie) t).id;
+        return -1;
+    }
+
+    private String getRutaImagen(Titulo t) {
+        if (t instanceof Pelicula) return ((Pelicula) t).getRutaImagen();
+        if (t instanceof Serie) return ((Serie) t).getRutaImagen();
+        return "";
     }
 }

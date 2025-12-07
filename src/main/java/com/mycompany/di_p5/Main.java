@@ -16,12 +16,12 @@ public class Main{
     /**
      * Lista estática que contiene todas las películas disponibles en el catálogo.
      */
-    private static List<Pelicula> peliculas = new ArrayList<>();
+    public static List<Pelicula> peliculas = new ArrayList<>();
     
     /**
      * Lista estática que contiene todas las series disponibles en el catálogo.
      */
-    private static List<Serie> series = new ArrayList<>();
+    public static List<Serie> series = new ArrayList<>();
     
     /**
      * Método que crea e inicializa la información de películas, series y clientes
@@ -63,7 +63,7 @@ public class Main{
         crearInfo();
         // Crear un cliente activo por defecto para poder guardar favoritos
         Cliente clienteActivo = new Cliente(1, "Alejandro", 20, TipoCliente.PREMIUM);
-        // Abrir la ventana de selección principal con las listas de películas y series
-        new MainSelectionFrame(peliculas, series, clienteActivo);
+        // Abrir el menú principal con las listas de películas y series
+        new MenuFrame(peliculas, series, clienteActivo);
     }
 }

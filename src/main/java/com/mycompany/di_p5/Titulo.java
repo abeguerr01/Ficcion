@@ -23,4 +23,14 @@ public class Titulo {
     public Titulo(String titulo){
         this.titulo = titulo;
     }
+
+    public String getTitulo() {
+        return titulo;
+    }
+
+    public void setTitulo(String titulo) {
+        this.titulo = titulo;
+    }
+    
+    
 }
